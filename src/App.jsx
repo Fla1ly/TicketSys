@@ -90,7 +90,7 @@ function Home() {
           <TextField sx={{ marginBottom: 2 }} id="outlined-basic" label="Email" variant="outlined" required onChange={e => setEmail(e.target.value)} />
           <Stack sx={styleMS}>
             <TextField sx={{ marginBottom: 2 }} id="outlined-multiline-flexible" label="Description" multiline maxRows={5} required onChange={e => setDescription(e.target.value)} />
-            <Button variant='contained' onclick={handleSubmit}>Send</Button>
+            <Button variant='contained' onClick={handleSubmit}>Send</Button>
           </Stack>
         </Box>
       </Modal>
