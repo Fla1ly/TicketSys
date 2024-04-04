@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Link } from 'react-router-dom'
 import * as React from 'react'
-import { Button, Stack, Modal, Typography, Box, TextField } from '@mui/material'
+import { Button, Stack, Modal, Typography, Box, TextField, Backdrop } from '@mui/material'
+import DoneIcon from '@mui/icons-material/Done';
 import Create from './pages/create.jsx'
 
 function App() {
@@ -29,6 +30,21 @@ const style = {
   p: 4,
 };
 
+const styleAlert = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  width: 500,
+  height: 200,
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
+
 const styleMS = {
   display: 'flex',
   flexDirection: 'column',
@@ -36,11 +52,13 @@ const styleMS = {
   marginBottom: 10,
 }
 
-
 function Home() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [alert, setAlert] = React.useState(false);
+  const handleAlertOpen = () => setAlert(true);
+  const handleAlertClose = () => setAlert(false);
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [description, setDescription] = React.useState('');
@@ -51,7 +69,7 @@ function Home() {
     const ticketData = {
       name: name,
       email: email,
-      description: description
+      description: description,
     };
 
     try {
@@ -69,9 +87,17 @@ function Home() {
       }
       const data = await response.json();
       console.log(data);
+      handleAlertOpen();
     } catch (error) {
       console.error('Error:', error);
     }
+    setAlert(true);
+    setOpen(false);
+  };
+
+  const getTicketByID = (e) => {
+    e.preventDefault();
+    console.log('getTicketByID');
   };
 
   return (
@@ -90,12 +116,20 @@ function Home() {
           <TextField sx={{ marginBottom: 2 }} id="outlined-basic" label="Email" variant="outlined" required onChange={e => setEmail(e.target.value)} />
           <Stack sx={styleMS}>
             <TextField sx={{ marginBottom: 2 }} id="outlined-multiline-flexible" label="Description" multiline maxRows={5} required onChange={e => setDescription(e.target.value)} />
-            <Button variant='contained' onClick={handleSubmit}>Send</Button>
+            <Button variant='contained' onClick={() => { handleSubmit(); getTicketByID(); }}>Send</Button>
           </Stack>
         </Box>
       </Modal>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={alert}
+      >
+        <Box sx={styleAlert}>
+          <Typography variant="h4" sx={{ marginBottom: 2 }}> Ticket Created! <DoneIcon /></Typography>
+        </Box>
+      </Backdrop>
     </Stack>
-  )
+  );
 }
 
 export default App
