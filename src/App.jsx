@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Button, Stack, Modal, Typography, Box, TextField, Backdrop } from '@mui/material';
+import { Button, Stack, Modal, Typography, Box, TextField, Backdrop, Chip } from '@mui/material';
 import * as React from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import DoneIcon from '@mui/icons-material/Done';
@@ -59,6 +59,7 @@ const styleMS = {
 
 function Home() {
   const [tickets, setTickets] = useState([]);
+  const [ticketID, setTicketID] = useState([]);
   const [open, setOpen] = useState(false);
   const [alert, setAlert] = useState(false);
   const [name, setName] = useState('');
@@ -93,13 +94,14 @@ function Home() {
         throw new Error('Network response was not ok');
       }
 
-      // Show success message
+      const responseData = await response.json();
+      const ticketID = responseData.ticketID;
+      setTicketID(ticketID);
+
       handleAlertOpen();
 
-      // Close the modal
       setOpen(false);
 
-      // Fetch updated ticket list
       fetchTickets();
     } catch (error) {
       console.error('Error:', error);
@@ -114,6 +116,7 @@ function Home() {
       }
       const data = await response.json();
       setTickets(data);
+      console.log(data)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -128,7 +131,15 @@ function Home() {
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'email', headerName: 'Email', width: 200 },
     { field: 'description', headerName: 'Description', width: 300 },
-    { field: 'dateCreated', headerName: 'Date', width: 200 },
+    { field: 'dateCreated', headerName: 'Date', width: 100 },
+    {
+      field: 'ticketStatus',
+      headerName: 'Status',
+      width: 150,
+      renderCell: (params) => (
+        <Chip label={params.value} color={params.value === 'Open' ? 'primary' : 'default'} variant="outlined" />
+      )
+    }
   ];
 
   const getRowId = (row) => row.ticketID;
@@ -144,7 +155,7 @@ function Home() {
           columns={columns}
           pageSize={5}
           disableSelectionOnClick
-          getRowId={getRowId} // Add this line
+          getRowId={getRowId}
         />
       </div>
       <Modal
@@ -169,6 +180,8 @@ function Home() {
       >
         <Box sx={styleAlert}>
           <Typography variant="h4" sx={{ marginBottom: 2 }}> Ticket Created! <DoneIcon /></Typography>
+          <Typography variant='h6'> This is your case id. Make sure to save it!</Typography>
+          <Chip label={ticketID} color="primary" variant="outlined" sx={{ marginBottom: 4 }} />
           <Button variant='contained' onClick={handleAlertClose}>Close</Button>
         </Box>
       </Backdrop>
