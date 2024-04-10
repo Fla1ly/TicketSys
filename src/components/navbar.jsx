@@ -110,7 +110,7 @@ function NavbarContent({
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => navigate('/admin-panel')}>
                                 <ListItemIcon>
-                                    <AdminPanelSettingsIcon/>
+                                    <AdminPanelSettingsIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Admin Panel" />
                             </ListItemButton>
@@ -118,7 +118,14 @@ function NavbarContent({
                     )}
                 </List>
                 <Box sx={{ flexGrow: 1 }} />
-                <Button variant="contained" onClick={() => navigate('/login')}>Login</Button>
+                {isAuthenticated ? (
+                    <Button variant="contained" onClick={() => {
+                        localStorage.removeItem('isAuthenticated');
+                        navigate('/');
+                    }}>Logout</Button>
+                ) : (
+                    <Button variant="contained" onClick={() => navigate('/login')}>Login</Button>
+                )}
             </Drawer>
             <Box sx={{
                 marginTop: 10,

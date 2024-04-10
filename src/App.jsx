@@ -13,6 +13,7 @@ import Create from './pages/create.jsx'
 /* pages */
 import Tickets from './pages/tickets.jsx'
 import FindTicket from './pages/find-ticket.jsx'
+import AdminPanel from './pages/admin-panel.jsx'
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         <Route path="/tickets" element={<Tickets />} />
         <Route path="/find-ticket" element={<FindTicket />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/admin-panel" element={<AdminPanel />} /> */}
+        <Route path="/admin-panel" element={<AdminPanel />} />
       </Routes>
     </Router>
   );
@@ -85,6 +86,7 @@ function Home() {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
+  const isAuthenticated = localStorage.getItem('isAuthenticated');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -141,7 +143,12 @@ function Home() {
   return (
     <NavbarContent>
       <Stack spacing={0} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-        <Button variant='contained' onClick={handleOpen}>Create Ticket</Button>
+        {isAuthenticated ? (
+          <Typography variant='h4'>Welcome Admin</Typography>
+        ) : (
+          <Typography variant='h4'>Welcome User</Typography>
+        )}
+        <Button variant='contained' sx={{ marginTop: '5%'}} onClick={handleOpen}>Create Ticket</Button>
         <Modal
           open={open}
           onClose={handleClose}
